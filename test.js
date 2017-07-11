@@ -2,10 +2,33 @@ const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('./app');
 const Customer = require('./models/customers');
+const Vendor = require('./models/vendors');
+
+
+describe('basic vendor tests', () => {
+
+  afterEach((done) => {
+  Vendor.deleteMany({}).then(done());
+  });
+
+  it('can create a vendor in the db and find it with mongoose syntax', (done) => {
+    const vendor = new Vendor({item: 'Coke', quantity: 2, cost: 50}).save().then(newVendor => {
+      expect(newVendor.item).to.equal('Coke');
+      expect(newVendor.quantity).to.equal(2);
+      expect(newVendor.cost).to.equal(50);
+      done();
+    });
+  });
+});
 
 
 
-describe('basic model tests', () => {
+describe('basic customer tests', () => {
+
+  afterEach((done) => {
+  Customer.deleteMany({}).then(done());
+  });
+
   it('can create a customer in the db and find it with mongoose syntax', (done) => {
     const customer = new Customer({item: 'Coke', quantity: 10, cost: 50}).save().then(newCustomer => {
       expect(newCustomer.item).to.equal('Coke');
@@ -31,12 +54,3 @@ describe('sanity test', () => {
 });
 
 // db.dropdatabase
-// it('can create a cat in the db and find it with mongoose syntax', (done) => {
-//   const cat = new Cat({name: 'mittens', fluffiness: 10})
-//   .save().then(newCat => {
-//     expect(newCat.name).to.equal('mittens');
-//     expect(newCat.fluffiness).to.equal(10);
-//     done();
-//   });
-// });
-// });

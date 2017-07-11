@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const parseurl = require('parseurl');
 const Customer = require('./models/customers');
+const Vendor = require('./models/vendors');
 mongoose.Promise = require('bluebird');
 
 
@@ -28,6 +29,12 @@ app.get('/api/sanity', (req, res) => {
 app.get('/api/customer/items', (req, res) => {
   Customer.find({}).then((customers) => {
     res.json(customers);
+  });
+});
+
+app.get('/api/vendor/items', (req, res) => {
+  Vendor.find({}).then((vendors) => {
+    res.json(vendors);
   });
 });
 

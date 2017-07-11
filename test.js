@@ -7,6 +7,33 @@ const Vendor = require('./models/vendors');
 
 describe('testing api endpoints', () => {
   beforeEach(done => {
+    Vendor.insertMany([
+      {item: 'Coke', quantity: 5, cost: 10},
+      {item: 'Pepsi', quantity: 15, cost: 100},
+      {item: 'Doctor Pepper', quantity: 1, cost: 1},
+      {item: 'Mt Dew', quantity: 2, cost: 2}
+    ]).then(done());
+  });
+
+  afterEach((done) => {
+  Vendor.deleteMany({}).then(done());
+  });
+
+  it('vendor api endpoint returns all items as json', (done) => {
+    request(app)
+    .get('/api/vendor/items')
+    .expect(200)
+    .expect(res => {
+      expect(res.body[0].item).to.equal('Coke');
+      expect(res.body[1].item).to.equal('Pepsi');
+      expect(res.body[2].item).to.equal('Doctor Pepper');
+      expect(res.body[3].item).to.equal('Mt Dew');
+    }).end(done);
+  });
+});
+
+describe('testing api endpoints', () => {
+  beforeEach(done => {
     Customer.insertMany([
       {item: 'Coke', quantity: 5, cost: 10},
       {item: 'Pepsi', quantity: 15, cost: 100},
@@ -31,19 +58,6 @@ describe('testing api endpoints', () => {
     }).end(done);
   });
 });
-
-// it('cats app endpoint returns all cats as json', (done) => {
-//     request(app)
-//     .get('/api/cats')
-//     .expect(200)
-//     .expect(res => {
-//       expect(res.body[0].name).to.equal('Skittles');
-//       expect(res.body[1].name).to.equal('Garfield');
-//       expect(res.body[2].name).to.equal('Princess cat face');
-//       expect(res.body.length).to.equal(3);
-//
-//     }).end(done);
-//   });
 
 describe('basic vendor tests', () => {
   afterEach((done) => {

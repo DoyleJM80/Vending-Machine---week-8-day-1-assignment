@@ -6,9 +6,17 @@ const Vendor = require('./models/vendors');
 
 
 describe('basic vendor tests', () => {
-
   afterEach((done) => {
   Vendor.deleteMany({}).then(done());
+  });
+
+  it('test should clean up after itself', (done) => {
+    const vendor = new Vendor().save().then(newVendor => {
+      Vendor.count().then(count => {
+        expect(count).to.equal(1);
+        done();
+      });
+    });
   });
 
   it('can create a vendor in the db and find it with mongoose syntax', (done) => {
@@ -21,12 +29,19 @@ describe('basic vendor tests', () => {
   });
 });
 
-
-
 describe('basic customer tests', () => {
 
   afterEach((done) => {
   Customer.deleteMany({}).then(done());
+  });
+
+  it('test should clean up after itself', (done) => {
+    const customer = new Customer().save().then(newCustomer => {
+      Customer.count().then(count => {
+        expect(count).to.equal(1);
+        done();
+      });
+    });
   });
 
   it('can create a customer in the db and find it with mongoose syntax', (done) => {

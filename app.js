@@ -3,6 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const parseurl = require('parseurl');
+const Customer = require('./models/customers');
 mongoose.Promise = require('bluebird');
 
 
@@ -22,6 +23,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.get('/api/sanity', (req, res) => {
   res.json({hello: 'hello'});
+});
+
+app.get('/api/customer/items', (req, res) => {
+  Customer.find({}).then((customers) => {
+    res.json(customers);
+  });
 });
 
 app.listen(3000, function() {

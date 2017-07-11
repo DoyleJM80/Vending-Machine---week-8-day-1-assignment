@@ -7,23 +7,26 @@ const Customer = require('./models/customers');
 const Vendor = require('./models/vendors');
 mongoose.Promise = require('bluebird');
 
-
 const app = express();
 
 const nodeEnv = process.env.NODE_ENV || "development";
 const config = require('./config.json')[nodeEnv];
 
 
+// mongoose.connect('mongodb://localhost:27017/jbvending');
 
 app.use('/static', express.static('static'));
-app.set('views', './views');
 
 app.use(bodyParser.json());
-mongoose.connect(config.mongoURL);
 app.use(bodyParser.urlencoded({extended: false}));
+mongoose.connect(config.mongoURL);
 
-app.get('/api/sanity', (req, res) => {
-  res.json({hello: 'hello'});
+// API ENDPOINTS
+// render index page with all vending machine items available
+app.get('/api/vendor/purchases', (req, res) => {
+  Vendor.find({}).then((vendors) => {
+    res.json(vendors);
+  });
 });
 
 app.get('/api/customer/items', (req, res) => {
@@ -32,22 +35,34 @@ app.get('/api/customer/items', (req, res) => {
   });
 });
 
-app.get('/api/vendor/items', (req, res) => {
-  Vendor.find({}).then((vendors) => {
-    res.json(vendors);
+app.post('/api/vendor/items', (req, res) => {
+  const newCustomer = new Customer(req.body).save().then((item) => {
+    res.status(201).json({});
   });
 });
 
-app.listen(3000, function() {
+// app.post('/api/cats', function(req, res) {
+//   const newCat = new Cat(req.body).save().then(function(cat){
+//     res.status(201).json({});
+//   });
+// });
+
+app.get('/api/sanity', (req, res) => {
+  res.json({hello: 'Jenn'});
+});
+
+app.listen(3000, () => {
   console.log('listening');
 });
 
 module.exports = app;
 
 
-// GET /api/customer/items - get a list of items
 // POST /api/customer/items/:itemId/purchases - purchase an item
-// GET /api/vendor/purchases - get a list of all purchases with their item and date/time
 // GET /api/vendor/money - get a total amount of money accepted by the machine
-// POST /api/vendor/items - add a new item not previously existing in the machine
+// --POST /api/vendor/items - add a new item not previously existing in the machine
 // PUT /api/vendor/items/:itemId - update item quantity, description, and cost
+
+// -----DONE
+// GET /api/customer/items - get a list of items
+// GET /api/vendor/purchases - get a list of all purchases with their item and date/time

@@ -40,9 +40,7 @@ describe('basic customer tests', () => {
     });
 
   it('customer test should clean up after itself', (done) => {
-  // creates a new cat because we know we can
     const customer = new Customer().save().then((newCustomer) => {
-      // count all the cats in the Cats database
       Customer.count().then((count) => {
         expect(count).to.equal(1);
         done();
@@ -65,7 +63,7 @@ describe('basic api endpoint tests', () => {
   it('can access api endpoints successfully', (done) => {
     request(app)
     .get('/api/sanity')
-    .expect(200, {hello: 'Jenn'}, done);
+    .expect(200, {hello: 'hello'}, done);
   });
 });
 

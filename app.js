@@ -12,9 +12,6 @@ const app = express();
 const nodeEnv = process.env.NODE_ENV || "development";
 const config = require('./config.json')[nodeEnv];
 
-
-// mongoose.connect('mongodb://localhost:27017/jbvending');
-
 app.use('/static', express.static('static'));
 
 app.use(bodyParser.json());
@@ -23,6 +20,17 @@ mongoose.connect(config.mongoURL);
 
 // API ENDPOINTS
 // render index page with all vending machine items available
+app.get('/api/vendor/money', (req, res) => {
+  Vendor.find({}).then((items) => {
+    let total = 0;
+    console.log(total);
+    for (var i = 0; i < items.length; i++) {
+      total += items[i].totalCost;
+    }
+    res.json(total);
+  });
+});
+
 app.get('/api/vendor/purchases', (req, res) => {
   Vendor.find({}).then((vendors) => {
     res.json(vendors);
@@ -41,14 +49,8 @@ app.post('/api/vendor/items', (req, res) => {
   });
 });
 
-// app.post('/api/cats', function(req, res) {
-//   const newCat = new Cat(req.body).save().then(function(cat){
-//     res.status(201).json({});
-//   });
-// });
-
 app.get('/api/sanity', (req, res) => {
-  res.json({hello: 'Jenn'});
+  res.json({hello: 'hello'});
 });
 
 app.listen(3000, () => {

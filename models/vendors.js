@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const vendorSchema = new mongoose.Schema({
   item: String,
   quantity: Number,
-  cost: Number,
+  totalCost: Number,
   purchasedTime: {
       type: Date,
       default: Date.now

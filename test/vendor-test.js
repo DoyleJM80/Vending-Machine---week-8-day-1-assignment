@@ -1,9 +1,34 @@
-
 const expect = require('chai').expect;
 const request = require('supertest');
 const app = require('../app');
 const Customer = require('../models/customers');
 const Vendor = require('../models/vendors');
+
+describe('test to get total money amount from machine', () => {
+
+  beforeEach((done) => {
+    Vendor.insertMany([
+      {item: 'Coke', quantity: 5, totalCost: 10},
+      {item: 'Pepsi', quantity: 15, totalCost: 100},
+      {item: 'Dr. Pepper', quantity: 1, totalCost: 1},
+      {item: 'Mtn Dew', quantity: 2, totalCost: 2}
+    ]).then(done());
+  });
+
+  afterEach((done) => {
+    Vendor.deleteMany({}).then(done());
+    });
+
+
+  it('take total amount from each item purchaced and add them together', (done) => {
+    request(app)
+    .get('/api/vendor/money')
+    .expect(200)
+    .expect((res) => {
+      expect(res.body).to.equal(113);
+    }).end(done);
+  });
+});
 
 describe('test to let vendor add more items to the machine', () => {
 
@@ -14,7 +39,7 @@ describe('test to let vendor add more items to the machine', () => {
   it('vendor api endpoint will allow addition of item to customer schema', (done) => {
     request(app)
     .post('/api/vendor/items')
-    .send({item: 'Cherry Coke', quantity: 4, cost: 75})
+    .send({item: 'Cherry Coke', quantity: 4, totalCost: 75})
     .expect(201)
     .expect((res) => {
       Customer.count().then((count) => {
@@ -24,27 +49,14 @@ describe('test to let vendor add more items to the machine', () => {
   });
 });
 
-// it('cats api endpoint allows creation of cats', function(done) {
-//     request(app)
-//       .post('/api/cats')
-//       // without this the request wouldn't receive anything
-//       .send({name: 'Pencylvester', fluffiness: 0})
-//       .expect(201)
-//       .expect(function(res) {
-//         Cat.count().then(function(count) {
-//           expect(count).to.equal(4);
-//         });
-//       }).end(done);
-//   });
-
 describe('basic vendor api endpoint tests', () => {
 
   beforeEach((done) => {
     Vendor.insertMany([
-      {item: 'Coke', quantity: 5, cost: 10},
-      {item: 'Pepsi', quantity: 15, cost: 100},
-      {item: 'Dr. Pepper', quantity: 1, cost: 1},
-      {item: 'Mtn Dew', quantity: 2, cost: 2}
+      {item: 'Coke', quantity: 5, totalCost: 10},
+      {item: 'Pepsi', quantity: 15, totalCost: 100},
+      {item: 'Dr. Pepper', quantity: 1, totalCost: 1},
+      {item: 'Mtn Dew', quantity: 2, totalCost: 2}
     ]).then(done());
   });
 
@@ -71,9 +83,7 @@ describe('basic vendor tests', () => {
   });
 
   it('vendor test should clean up after itself', (done) => {
-  // creates a new cat because we know we can
     const vendor = new Vendor().save().then((newVendor) => {
-      // count all the cats in the Cats database
       Vendor.count().then((count) => {
         expect(count).to.equal(1);
         done();
@@ -82,10 +92,10 @@ describe('basic vendor tests', () => {
   });
 
   it('can create a vendor item in the db and find it with mongoose', (done) => {
-    const vendor = new Vendor({item: 'Coke', quantity: 2, cost: 50}).save().then((newVendor) => {
+    const vendor = new Vendor({item: 'Coke', quantity: 2, totalCost: 50}).save().then((newVendor) => {
       expect(newVendor.item).to.equal('Coke');
       expect(newVendor.quantity).to.equal(2);
-      expect(newVendor.cost).to.equal(50);
+      expect(newVendor.totalCost).to.equal(50);
       done();
     });
   });
@@ -95,7 +105,7 @@ describe('basic api endpoint tests', () => {
   it('can access api endpoints successfully', (done) => {
     request(app)
     .get('/api/sanity')
-    .expect(200, {hello: 'Jenn'}, done);
+    .expect(200, {hello: 'hello'}, done);
   });
 });
 

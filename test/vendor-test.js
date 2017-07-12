@@ -4,6 +4,35 @@ const app = require('../app');
 const Customer = require('../models/customers');
 const Vendor = require('../models/vendors');
 
+describe('test to update item', () => {
+
+  beforeEach((done) => {
+    Customer.insertMany([
+      {item: 'Coke', quantity: 1, cost: 10},
+      {item: 'Pepsi', quantity: 15, cost: 100},
+      {item: 'Dr. Pepper', quantity: 1, cost: 1},
+      {item: 'Mtn Dew', quantity: 2, cost: 2}
+    ]).then(done());
+  });
+
+  afterEach((done) => {
+    Customer.deleteMany({}).then(done());
+    });
+
+  it('allow vendor to modify exesting properties of item in machine', (done) => {
+    let testItem = {item: 'Coke', quantity: 5, cost: 10};
+    request(app)
+    .patch('/api/vendor/items/' + testItem._id)
+    .send({})
+    .expect(200)
+    .expect((res) => {
+      expect(testItem.item).to.equal('Coke');
+      expect(testItem.quantity).to.equal(5);
+      expect(testItem.cost).to.equal(10);
+    }).end(done);
+  });
+  });
+
 describe('test to get total money amount from machine', () => {
 
   beforeEach((done) => {
@@ -18,7 +47,6 @@ describe('test to get total money amount from machine', () => {
   afterEach((done) => {
     Vendor.deleteMany({}).then(done());
     });
-
 
   it('take total amount from each item purchaced and add them together', (done) => {
     request(app)

@@ -118,8 +118,9 @@ describe('sanity test', () => {
 
 
 
-// A vendor should be able to see total amount of money in machine
+
 // A vendor should be able to update the description, quantity, and costs of items in the machine
 // A vendor should be able to add a new item to the machine
 // ---------------TESTS DONE
 // A vendor should be able to see a list of all purchases with their time of purchase```
+// A vendor should be able to see total amount of money in machine

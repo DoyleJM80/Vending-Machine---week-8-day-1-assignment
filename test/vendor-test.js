@@ -53,7 +53,7 @@ describe('test to get total money amount from machine', () => {
     .get('/api/vendor/money')
     .expect(200)
     .expect((res) => {
-      expect(res.body).to.equal(113);
+      expect(res.body).to.equal(123);
     }).end(done);
   });
 });
@@ -147,8 +147,9 @@ describe('sanity test', () => {
 
 
 
+
+// ---------------TESTS DONE
 // A vendor should be able to update the description, quantity, and costs of items in the machine
 // A vendor should be able to add a new item to the machine
-// ---------------TESTS DONE
 // A vendor should be able to see a list of all purchases with their time of purchase```
 // A vendor should be able to see total amount of money in machine

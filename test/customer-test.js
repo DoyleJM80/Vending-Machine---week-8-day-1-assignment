@@ -5,6 +5,41 @@ const Customer = require('../models/customers');
 const Vendor = require('../models/vendors');
 
 
+
+describe('select and pay for item', () => {
+
+  beforeEach((done) => {
+    Customer.insertMany([
+      {item: 'Coke', quantity: 5, cost: 10},
+      {item: 'Pepsi', quantity: 15, cost: 100},
+      {item: 'Dr. Pepper', quantity: 1, cost: 1},
+      {item: 'Mtn Dew', quantity: 2, cost: 2}
+    ]).then(done());
+  });
+
+  afterEach((done) => {
+    Customer.deleteMany({}).then(() => done());
+    });
+
+  // it('should allow a customer to pay and get change if needed', (done) => {
+  //   request(app)
+  //   .post('/api/customer')
+  // });
+
+  it('should make purchase from machine', (done) => {
+    request(app)
+    .post('/api/customer/items/Coke/purchases')
+    .send({})
+    .expect(201)
+    .expect((res) => {
+      Vendor.count().then((count) => {
+        expect(count).to.equal(1);
+      });
+    }).end(done());
+  });
+});
+
+
 describe('basic customer api endpoint tests', () => {
 
   beforeEach((done) => {
